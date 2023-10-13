@@ -58,7 +58,7 @@ class GenerateTestMotherAction : AnAction() {
 
         val motherClass = PsiTreeUtil.findChildOfType(motherFile, PsiClass::class.java)!!
         val builderInnerClass: PsiClass = createBuilderInnerClass(elementFactory, motherClass)
-        addBuilderEntryPointMethod(elementFactory, motherClass, builderInnerClass)
+        addBuilderEntryPointMethod(elementFactory, selectedClass, motherClass, builderInnerClass)
         addFieldsAndMethodsToBuilderInnerClass(selectedClass, elementFactory, builderInnerClass, selectedClass)
 
         motherClass.add(builderInnerClass)
@@ -97,8 +97,8 @@ class GenerateTestMotherAction : AnAction() {
 
     }
 
-    private fun addBuilderEntryPointMethod(elementFactory: PsiElementFactory, motherClass: PsiClass, builderInnerClass: PsiClass) {
-        val className = motherClass.name!!
+    private fun addBuilderEntryPointMethod(elementFactory: PsiElementFactory, selectedClass: PsiClass, motherClass: PsiClass, builderInnerClass: PsiClass) {
+        val className = selectedClass.name!!
         val lowerCasedClassName = className.replaceFirstChar { it.lowercase() }
         val builderMethod: PsiMethod = elementFactory.createMethod(lowerCasedClassName, PsiTypesUtil.getClassType(builderInnerClass));
         PsiUtil.setModifierProperty(builderMethod, PsiModifier.STATIC, true)
