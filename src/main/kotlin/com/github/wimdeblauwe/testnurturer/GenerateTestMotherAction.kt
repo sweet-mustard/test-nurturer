@@ -10,8 +10,10 @@ import com.intellij.openapi.ui.Messages
 import com.intellij.psi.*
 import com.intellij.psi.codeStyle.CodeStyleManager
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.PsiTreeUtil.findChildOfType
+import com.intellij.psi.util.PsiTreeUtil.findChildrenOfType
 import com.intellij.psi.util.PsiTypesUtil
-import com.intellij.psi.util.PsiUtil
+import com.intellij.psi.util.PsiUtil.setModifierProperty
 import com.intellij.psi.util.parentOfType
 
 
@@ -47,73 +49,98 @@ class GenerateTestMotherAction : AnAction() {
         val directoryOfClass = selectedClass.containingFile.containingDirectory
         val motherFileName = selectedClass.name + "Mother.java"
         var motherFile = directoryOfClass.findFile(motherFileName);
-        if (motherFile != null) {
-            motherFile.delete()
+        if (motherFile == null) {
+            motherFile = PsiFileFactory.getInstance(currentProject)
+                    .createFileFromText(motherFileName, JavaFileType.INSTANCE,
+                            "public class ${selectedClass.name}Mother {}")
         }
 
-        motherFile = PsiFileFactory.getInstance(currentProject)
-                .createFileFromText(motherFileName, JavaFileType.INSTANCE,
-                        "public class ${selectedClass.name}Mother {}")
+        val motherClass = findChildOfType(motherFile, PsiClass::class.java)!!
 
+        val existingBuilder = findChildrenOfType(motherClass, PsiClass::class.java)
+                .filter { it.name == "Builder" }
+                .firstOrNull()
+        if (existingBuilder != null) {
+            populateClass(elementFactory, selectedClass, motherClass, existingBuilder)
+        } else {
+            val builderClass = createBuilderInnerClass(elementFactory, motherClass)
+            populateClass(elementFactory, selectedClass, motherClass, builderClass)
+            motherClass.add(builderClass)
+        }
 
-        val motherClass = PsiTreeUtil.findChildOfType(motherFile, PsiClass::class.java)!!
-        val builderInnerClass: PsiClass = createBuilderInnerClass(elementFactory, motherClass)
-        addBuilderEntryPointMethod(elementFactory, selectedClass, motherClass, builderInnerClass)
-        addFieldsAndMethodsToBuilderInnerClass(selectedClass, elementFactory, builderInnerClass, selectedClass)
-
-        motherClass.add(builderInnerClass)
 
         val codeStyleManager = CodeStyleManager.getInstance(currentProject)
         codeStyleManager.reformat(motherFile)
 
-        directoryOfClass.add(motherFile)
+        if (directoryOfClass.findFile(motherFileName) == null) {
+            directoryOfClass.add(motherFile)
+        }
     }
 
-    private fun addFieldsAndMethodsToBuilderInnerClass(selectedClass: PsiClass, elementFactory: PsiElementFactory, builderInnerClass: PsiClass, selectedClass1: PsiClass) {
+    private fun populateClass(elementFactory: PsiElementFactory, selectedClass: PsiClass, motherClass: PsiClass, builderClass: PsiClass) {
+        addBuilderEntryPointMethod(elementFactory, selectedClass, motherClass, builderClass)
+        addFieldsAndMethodsToBuilderInnerClass(selectedClass, elementFactory, builderClass)
+    }
+
+    private fun addFieldsAndMethodsToBuilderInnerClass(selectedClass: PsiClass, elementFactory: PsiElementFactory, builderInnerClass: PsiClass) {
         val fieldsOfSelectedClass = PsiTreeUtil.findChildrenOfAnyType(selectedClass, PsiField::class.java)
         for (psiField in fieldsOfSelectedClass) {
-            val builderInnerClassField = elementFactory.createField(psiField.name, psiField.type)
-            builderInnerClass.add(builderInnerClassField)
-        }
 
-        for (psiField in fieldsOfSelectedClass) {
             val fieldName = psiField.name
-            val fieldMethod = elementFactory.createMethod(fieldName, PsiTypesUtil.getClassType(builderInnerClass))
-            val parameter = elementFactory.createParameter(fieldName, psiField.type)
-            fieldMethod.parameterList.add(parameter)
 
-            fieldMethod.body!!.add(elementFactory.createStatementFromText("this.$fieldName = $fieldName;", fieldMethod))
-            fieldMethod.body!!.add(elementFactory.createStatementFromText("return this;", fieldMethod))
+            val existingField = findChildrenOfType(builderInnerClass, PsiField::class.java)
+                    .filter { it.name == fieldName }
+                    .firstOrNull()
 
-            builderInnerClass.add(fieldMethod)
+            if (existingField == null) {
+                val builderInnerClassField = elementFactory.createField(psiField.name, psiField.type)
+                builderInnerClass.add(builderInnerClassField)
+
+                val fieldMethod = elementFactory.createMethod(fieldName, PsiTypesUtil.getClassType(builderInnerClass))
+                val parameter = elementFactory.createParameter(fieldName, psiField.type)
+                fieldMethod.parameterList.add(parameter)
+
+                fieldMethod.body!!.add(elementFactory.createStatementFromText("this.$fieldName = $fieldName;", fieldMethod))
+                fieldMethod.body!!.add(elementFactory.createStatementFromText("return this;", fieldMethod))
+
+                builderInnerClass.add(fieldMethod)
+            }
         }
+
+        val existingReturnMethod = findChildrenOfType(builderInnerClass, PsiMethod::class.java)
+                .filter { it.name == "build" }
+                .firstOrNull()
+
+        existingReturnMethod?.delete()
 
         val parameterList = fieldsOfSelectedClass.map { it.name }.joinToString(separator = ",")
 
         val returnMethod = elementFactory.createMethod("build", PsiTypesUtil.getClassType(selectedClass))
         returnMethod.body!!.add(elementFactory.createStatementFromText("return new ${selectedClass.name} ( $parameterList) ;", returnMethod))
         builderInnerClass.add(returnMethod)
-
-
     }
 
     private fun addBuilderEntryPointMethod(elementFactory: PsiElementFactory, selectedClass: PsiClass, motherClass: PsiClass, builderInnerClass: PsiClass) {
         val className = selectedClass.name!!
-        val lowerCasedClassName = className.replaceFirstChar { it.lowercase() }
-        val builderMethod: PsiMethod = elementFactory.createMethod(lowerCasedClassName, PsiTypesUtil.getClassType(builderInnerClass));
-        PsiUtil.setModifierProperty(builderMethod, PsiModifier.STATIC, true)
+        val builderEntryPointMethodName = className.replaceFirstChar { it.lowercase() }
 
-        val body = builderMethod.body!!
-        body.add(elementFactory.createStatementFromText("return new Builder();", builderMethod))
+        val existingMethod = findChildrenOfType(motherClass, PsiMethod::class.java)
+                .filter { it.name == builderEntryPointMethodName }
+                .firstOrNull()
 
-        motherClass.add(builderMethod)
+        if (existingMethod == null) {
+            val builderMethod: PsiMethod = elementFactory.createMethod(builderEntryPointMethodName, PsiTypesUtil.getClassType(builderInnerClass));
+            setModifierProperty(builderMethod, PsiModifier.STATIC, true)
+            val body = builderMethod.body!!
+            body.add(elementFactory.createStatementFromText("return new Builder();", builderMethod))
+            motherClass.add(builderMethod)
+        }
     }
 
     private fun createBuilderInnerClass(elementFactory: PsiElementFactory, motherClass: PsiClass): PsiClass {
-
         val builderInnerClass: PsiClass = elementFactory.createClass("Builder")
-        PsiUtil.setModifierProperty(builderInnerClass, PsiModifier.STATIC, true);
-        PsiUtil.setModifierProperty(builderInnerClass, PsiModifier.FINAL, true)
+        setModifierProperty(builderInnerClass, PsiModifier.STATIC, true);
+        setModifierProperty(builderInnerClass, PsiModifier.FINAL, true)
         return builderInnerClass
     }
 }
