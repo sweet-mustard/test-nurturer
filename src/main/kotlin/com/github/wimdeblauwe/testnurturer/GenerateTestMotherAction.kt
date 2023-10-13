@@ -73,7 +73,9 @@ class GenerateTestMotherAction : AnAction() {
         codeStyleManager.reformat(motherFile)
 
         if (directoryOfClass.findFile(motherFileName) == null) {
-            directoryOfClass.add(motherFile)
+            directoryOfClass.createSubdirectory("test")
+            val subdir = directoryOfClass.subdirectories[0]
+            subdir.add(motherFile)
         }
     }
 
