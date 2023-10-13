@@ -6,6 +6,8 @@ import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiField
+import com.intellij.psi.util.PsiTreeUtil
 
 
 class GenerateTestMotherAction : AnAction() {
@@ -15,9 +17,14 @@ class GenerateTestMotherAction : AnAction() {
         val message: StringBuilder = StringBuilder(event.getPresentation().getText() + " Selected!")
         // If an element is selected in the editor, add info about it.
         val selectedElement: PsiElement? = event.getData(CommonDataKeys.PSI_ELEMENT)
+
+
         if (selectedElement != null) {
             message.append("\nSelected Element: ").append(selectedElement)
         }
+
+        val findChildOfType = PsiTreeUtil.findChildOfType(selectedElement, PsiField::class.java)
+
         val title: String = event.getPresentation().getDescription()
         Messages.showMessageDialog(
                 currentProject,
