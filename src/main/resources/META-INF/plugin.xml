@@ -15,4 +15,12 @@
     <applicationListeners>
         <listener class="com.github.wimdeblauwe.testnurturer.listeners.MyApplicationActivationListener" topic="com.intellij.openapi.application.ApplicationActivationListener"/>
     </applicationListeners>
+  <actions>
+    <action id="com.github.wimdeblauwe.testnurturer.GenerateTestMotherAction"
+      class="com.github.wimdeblauwe.testnurturer.GenerateTestMotherAction"
+      text="Generate Test Mother" description="Generate Test Mother for the current class">
+      <add-to-group group-id="ToolsMenu" anchor="first"/>
+      <keyboard-shortcut keymap="$default" first-keystroke="shift meta M"/>
+    </action>
+  </actions>
 </idea-plugin>
