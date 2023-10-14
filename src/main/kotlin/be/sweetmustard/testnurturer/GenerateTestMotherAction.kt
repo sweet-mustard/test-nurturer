@@ -78,9 +78,29 @@ class GenerateTestMotherAction : AnAction() {
 
         if (shouldCreateNewFile) {
             val testSourceRootDirectory =
-                PsiManager.getInstance(currentProject).findDirectory(testSourcesRoot)
-            testSourceRootDirectory?.add(motherFile);
+                PsiManager.getInstance(currentProject).findDirectory(testSourcesRoot)!!
+
+            val directory = createPackageDirectoriesIfNeeded(testSourceRootDirectory, selectedClass)
+
+            directory.add(motherFile);
         }
+    }
+
+    private fun createPackageDirectoriesIfNeeded(
+        testSourceRootDirectory: PsiDirectory,
+        selectedClass: PsiClass
+    ): PsiDirectory {
+        val packageName = getPackageName(selectedClass)
+        var directory = testSourceRootDirectory
+        val packageNameParts = packageName.split(".").toList()
+        for (packageNamePart in packageNameParts) {
+            var subdirectory = directory.findSubdirectory(packageNamePart)
+            if (subdirectory == null) {
+                subdirectory = directory.createSubdirectory(packageNamePart)
+            }
+            directory = subdirectory
+        }
+        return directory
     }
 
     private fun getOrCreateMotherFile(
@@ -89,7 +109,9 @@ class GenerateTestMotherAction : AnAction() {
         currentProject: Project
     ): Pair<PsiFile, Boolean> {
         val motherFileName = selectedClass.name + "Mother.java"
-        val motherVirtualFile = testSourcesRoot.findFileByRelativePath(motherFileName)
+        val packageName: String = getPackageName(selectedClass)
+        val motherVirtualFile =
+            testSourcesRoot.findFileByRelativePath(packageName.replace(".", "/") + motherFileName)
         var motherFile: PsiFile? = null
         if (motherVirtualFile != null) {
             motherFile = PsiManager.getInstance(currentProject).findFile(motherVirtualFile)
@@ -98,13 +120,28 @@ class GenerateTestMotherAction : AnAction() {
         var shouldCreateNewFile = false
         if (motherVirtualFile == null || motherFile == null) {
             shouldCreateNewFile = true
+            val builder = StringBuilder()
+            if (packageName.length > 0) {
+                builder.appendLine("package ${packageName};")
+                builder.appendLine("")
+            }
+            builder.appendLine("public class ${selectedClass.name}Mother {}")
             motherFile = PsiFileFactory.getInstance(currentProject)
                 .createFileFromText(
                     motherFileName, JavaFileType.INSTANCE,
-                    "public class ${selectedClass.name}Mother {}"
+                    builder.toString()
                 )
         }
         return Pair(motherFile, shouldCreateNewFile)
+    }
+
+    private fun getPackageName(selectedClass: PsiClass): String {
+        val selectedClassFile = selectedClass.containingFile;
+        var packageName: String = "";
+        if (selectedClassFile is PsiJavaFile) {
+            packageName = selectedClassFile.packageName!!
+        }
+        return packageName
     }
 
     private fun getTestSourcesRoot(currentProject: Project, selectedClass: PsiClass): VirtualFile? {
