@@ -66,7 +66,7 @@ class GenerateTestMotherAction : AnAction() {
         if (existingBuilder != null) {
             populateClass(elementFactory, selectedClass, motherClass, existingBuilder)
         } else {
-            val builderClass = createBuilderInnerClass(elementFactory, motherClass)
+            val builderClass = createBuilderInnerClass(elementFactory)
             populateClass(elementFactory, selectedClass, motherClass, builderClass)
             motherClass.add(builderClass)
         }
@@ -251,8 +251,7 @@ class GenerateTestMotherAction : AnAction() {
     }
 
     private fun createBuilderInnerClass(
-        elementFactory: PsiElementFactory,
-        motherClass: PsiClass
+        elementFactory: PsiElementFactory
     ): PsiClass {
         val builderInnerClass: PsiClass = elementFactory.createClass("Builder")
         setModifierProperty(builderInnerClass, PsiModifier.STATIC, true);

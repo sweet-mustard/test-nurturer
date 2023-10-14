@@ -37,7 +37,7 @@ class TestMotherHelper {
             val selectedClassFile = selectedClass.containingFile;
             var packageName = "";
             if (selectedClassFile is PsiJavaFile) {
-                packageName = selectedClassFile.packageName!!
+                packageName = selectedClassFile.packageName
             }
             return packageName
         }

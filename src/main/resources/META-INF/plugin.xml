@@ -10,19 +10,6 @@
   <resource-bundle>messages.MyBundle</resource-bundle>
 
   <extensions defaultExtensionNs="com.intellij">
-    <toolWindow factoryClass="be.sweetmustard.testnurturer.toolWindow.MyToolWindowFactory"
-      id="MyToolWindow"/>
-
-    <localInspection language="JAVA"
-      bundle="messages.MyBundle"
-      key="inspection.display.name"
-      groupPath="Java"
-      groupBundle="messages.InspectionsBundle"
-      groupKey="group.names.probable.bugs"
-      enabledByDefault="true"
-      level="WARNING"
-      implementationClass="be.sweetmustard.testnurturer.CodeInspector"/>
-
     <localInspection language="JAVA"
       bundle="messages.MyBundle"
       key="inspection.mother.display.name"
@@ -34,10 +21,6 @@
       implementationClass="be.sweetmustard.testnurturer.MotherInspector"/>
   </extensions>
 
-  <applicationListeners>
-    <listener class="be.sweetmustard.testnurturer.listeners.MyApplicationActivationListener"
-      topic="com.intellij.openapi.application.ApplicationActivationListener"/>
-  </applicationListeners>
   <actions>
     <action id="be.sweetmustard.testnurturer.GenerateTestMotherAction"
       class="be.sweetmustard.testnurturer.GenerateTestMotherAction"
