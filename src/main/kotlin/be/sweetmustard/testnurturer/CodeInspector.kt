@@ -1,6 +1,6 @@
-package com.github.wimdeblauwe.testnurturer
+package be.sweetmustard.testnurturer
 
-import com.github.wimdeblauwe.testnurturer.MyBundle.message
+import be.sweetmustard.testnurturer.MyBundle.message
 import com.intellij.codeInspection.AbstractBaseJavaLocalInspectionTool
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemDescriptor

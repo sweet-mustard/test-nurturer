@@ -1,9 +1,9 @@
-package com.github.wimdeblauwe.testnurturer.services
+package be.sweetmustard.testnurturer.services
 
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
-import com.github.wimdeblauwe.testnurturer.MyBundle
+import be.sweetmustard.testnurturer.MyBundle
 
 @Service(Service.Level.PROJECT)
 class MyProjectService(project: Project) {

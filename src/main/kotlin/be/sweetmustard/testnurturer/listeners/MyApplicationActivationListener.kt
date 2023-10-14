@@ -1,4 +1,4 @@
-package com.github.wimdeblauwe.testnurturer.listeners
+package be.sweetmustard.testnurturer.listeners
 
 import com.intellij.openapi.application.ApplicationActivationListener
 import com.intellij.openapi.diagnostic.thisLogger

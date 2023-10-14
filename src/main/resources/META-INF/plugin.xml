@@ -1,47 +1,49 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <id>com.github.wimdeblauwe.testnurturer</id>
-    <name>test-nurturer Template</name>
-    <vendor>wimdeblauwe</vendor>
+  <id>be.sweetmustard.testnurturer</id>
+  <name>Test Nurturer</name>
+  <vendor>Sweet Mustard</vendor>
 
-    <depends>com.intellij.modules.platform</depends>
+  <depends>com.intellij.modules.platform</depends>
   <depends>com.intellij.java</depends>
 
-    <resource-bundle>messages.MyBundle</resource-bundle>
+  <resource-bundle>messages.MyBundle</resource-bundle>
 
-    <extensions defaultExtensionNs="com.intellij">
-        <toolWindow factoryClass="com.github.wimdeblauwe.testnurturer.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
+  <extensions defaultExtensionNs="com.intellij">
+    <toolWindow factoryClass="be.sweetmustard.testnurturer.toolWindow.MyToolWindowFactory"
+      id="MyToolWindow"/>
 
-        <localInspection language="JAVA"
-                         bundle="messages.MyBundle"
-                         key="inspection.display.name"
-                         groupPath="Java"
-                         groupBundle="messages.InspectionsBundle"
-                         groupKey="group.names.probable.bugs"
-                         enabledByDefault="true"
-                         level="WARNING"
-                         implementationClass="com.github.wimdeblauwe.testnurturer.CodeInspector"/>
+    <localInspection language="JAVA"
+      bundle="messages.MyBundle"
+      key="inspection.display.name"
+      groupPath="Java"
+      groupBundle="messages.InspectionsBundle"
+      groupKey="group.names.probable.bugs"
+      enabledByDefault="true"
+      level="WARNING"
+      implementationClass="be.sweetmustard.testnurturer.CodeInspector"/>
 
-        <localInspection language="JAVA"
-                         bundle="messages.MyBundle"
-                         key="inspection.mother.display.name"
-                         groupPath="Java"
-                         groupBundle="messages.InspectionsBundle"
-                         groupKey="group.names.probable.bugs"
-                         enabledByDefault="true"
-                         level="WARNING"
-                         implementationClass="com.github.wimdeblauwe.testnurturer.MotherInspector"/>
-    </extensions>
+    <localInspection language="JAVA"
+      bundle="messages.MyBundle"
+      key="inspection.mother.display.name"
+      groupPath="Java"
+      groupBundle="messages.InspectionsBundle"
+      groupKey="group.names.probable.bugs"
+      enabledByDefault="true"
+      level="WARNING"
+      implementationClass="be.sweetmustard.testnurturer.MotherInspector"/>
+  </extensions>
 
-    <applicationListeners>
-        <listener class="com.github.wimdeblauwe.testnurturer.listeners.MyApplicationActivationListener" topic="com.intellij.openapi.application.ApplicationActivationListener"/>
-    </applicationListeners>
+  <applicationListeners>
+    <listener class="be.sweetmustard.testnurturer.listeners.MyApplicationActivationListener"
+      topic="com.intellij.openapi.application.ApplicationActivationListener"/>
+  </applicationListeners>
   <actions>
-    <action id="com.github.wimdeblauwe.testnurturer.GenerateTestMotherAction"
-      class="com.github.wimdeblauwe.testnurturer.GenerateTestMotherAction"
+    <action id="be.sweetmustard.testnurturer.GenerateTestMotherAction"
+      class="be.sweetmustard.testnurturer.GenerateTestMotherAction"
       text="Generate Test Mother" description="Generate Test Mother for the current class">
-        <add-to-group group-id="RunContextGroup" anchor="last"/>
-        <keyboard-shortcut keymap="$default" first-keystroke="shift meta M"/>
+      <add-to-group group-id="RunContextGroup" anchor="last"/>
+      <keyboard-shortcut keymap="$default" first-keystroke="shift meta M"/>
     </action>
   </actions>
 

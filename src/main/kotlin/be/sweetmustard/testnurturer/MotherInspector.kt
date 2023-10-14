@@ -1,4 +1,4 @@
-package com.github.wimdeblauwe.testnurturer
+package be.sweetmustard.testnurturer
 
 import com.intellij.codeInspection.AbstractBaseJavaLocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType

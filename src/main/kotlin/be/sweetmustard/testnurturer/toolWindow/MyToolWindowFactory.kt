@@ -1,4 +1,4 @@
-package com.github.wimdeblauwe.testnurturer.toolWindow
+package be.sweetmustard.testnurturer.toolWindow
 
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
@@ -8,8 +8,8 @@ import com.intellij.openapi.wm.ToolWindowFactory
 import com.intellij.ui.components.JBLabel
 import com.intellij.ui.components.JBPanel
 import com.intellij.ui.content.ContentFactory
-import com.github.wimdeblauwe.testnurturer.MyBundle
-import com.github.wimdeblauwe.testnurturer.services.MyProjectService
+import be.sweetmustard.testnurturer.MyBundle
+import be.sweetmustard.testnurturer.services.MyProjectService
 import javax.swing.JButton
 
 

@@ -1,4 +1,4 @@
-package com.github.wimdeblauwe.testnurturer
+package be.sweetmustard.testnurturer
 
 import com.intellij.ide.highlighter.XmlFileType
 import com.intellij.openapi.components.service
@@ -6,7 +6,7 @@ import com.intellij.psi.xml.XmlFile
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.intellij.util.PsiErrorElementUtil
-import com.github.wimdeblauwe.testnurturer.services.MyProjectService
+import be.sweetmustard.testnurturer.services.MyProjectService
 
 @TestDataPath("\$CONTENT_ROOT/src/test/testData")
 class MyPluginTest : BasePlatformTestCase() {
