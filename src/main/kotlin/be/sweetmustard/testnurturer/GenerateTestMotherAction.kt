@@ -81,6 +81,8 @@ class GenerateTestMotherAction : AnAction() {
 
             directory.add(motherFile);
         }
+
+        motherFile.navigate(true)
     }
 
     private fun createPackageDirectoriesIfNeeded(
