@@ -32,7 +32,8 @@ The development of this plugin is proudly sponsored by [Sweet Mustard](https://w
   
 - Manually:
 
-  Download the [latest release](https://github.com/wimdeblauwe/test-nurturer/releases/latest) and install it manually using
+  Download the [latest release](https://github.com/sweetmustard/test-nurturer/releases/latest) and
+  install it manually using
   <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>⚙️</kbd> > <kbd>Install plugin from disk...</kbd>
 
 
