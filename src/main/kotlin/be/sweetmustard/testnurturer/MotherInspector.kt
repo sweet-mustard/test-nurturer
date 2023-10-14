@@ -50,11 +50,14 @@ class MotherInspector : AbstractBaseJavaLocalInspectionTool() {
         }
     }
 
-    private fun getMotherForClass(selectedClass: PsiClass): PsiClass? {
-        val motherName = selectedClass.name + "Mother.java";
-        val mother = selectedClass.containingFile.containingDirectory.findFile(motherName)
-        if (mother != null) {
-            return PsiTreeUtil.findChildOfType(mother, PsiClass::class.java)
+    private fun getMotherForClass(currentClass: PsiClass): PsiClass? {
+        val testSourceRoots = TestMotherHelper.getPossibleTestSourceRoots(currentClass)
+        for (testSourceRoot in testSourceRoots) {
+            val correspondingMother =
+                TestMotherHelper.getCorrespondingMother(testSourceRoot, currentClass)
+            if (correspondingMother != null) {
+                return PsiTreeUtil.findChildOfType(correspondingMother, PsiClass::class.java)
+            }
         }
         return null;
     }

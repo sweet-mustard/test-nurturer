@@ -6,8 +6,6 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.roots.ModuleRootManager
-import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.ui.Messages
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.*
@@ -18,7 +16,6 @@ import com.intellij.psi.util.PsiTreeUtil.findChildrenOfType
 import com.intellij.psi.util.PsiTypesUtil
 import com.intellij.psi.util.PsiUtil.setModifierProperty
 import com.intellij.psi.util.parentOfType
-import org.jetbrains.jps.model.java.JavaSourceRootType
 
 
 class GenerateTestMotherAction : AnAction() {
@@ -90,7 +87,7 @@ class GenerateTestMotherAction : AnAction() {
         testSourceRootDirectory: PsiDirectory,
         selectedClass: PsiClass
     ): PsiDirectory {
-        val packageName = getPackageName(selectedClass)
+        val packageName = TestMotherHelper.getPackageName(selectedClass)
         var directory = testSourceRootDirectory
         val packageNameParts = packageName.split(".").toList()
         for (packageNamePart in packageNameParts) {
@@ -108,17 +105,11 @@ class GenerateTestMotherAction : AnAction() {
         testSourcesRoot: VirtualFile,
         currentProject: Project
     ): Pair<PsiFile, Boolean> {
-        val motherFileName = selectedClass.name + "Mother.java"
-        val packageName: String = getPackageName(selectedClass)
-        val motherVirtualFile =
-            testSourcesRoot.findFileByRelativePath(packageName.replace(".", "/") + motherFileName)
-        var motherFile: PsiFile? = null
-        if (motherVirtualFile != null) {
-            motherFile = PsiManager.getInstance(currentProject).findFile(motherVirtualFile)
-        }
+        val packageName = TestMotherHelper.getPackageName(selectedClass)
+        var motherFile = TestMotherHelper.getCorrespondingMother(testSourcesRoot, selectedClass)
 
         var shouldCreateNewFile = false
-        if (motherVirtualFile == null || motherFile == null) {
+        if (motherFile == null) {
             shouldCreateNewFile = true
             val builder = StringBuilder()
             if (packageName.length > 0) {
@@ -128,30 +119,16 @@ class GenerateTestMotherAction : AnAction() {
             builder.appendLine("public class ${selectedClass.name}Mother {}")
             motherFile = PsiFileFactory.getInstance(currentProject)
                 .createFileFromText(
-                    motherFileName, JavaFileType.INSTANCE,
+                    TestMotherHelper.getMotherFileName(selectedClass),
+                    JavaFileType.INSTANCE,
                     builder.toString()
                 )
         }
         return Pair(motherFile, shouldCreateNewFile)
     }
 
-    private fun getPackageName(selectedClass: PsiClass): String {
-        val selectedClassFile = selectedClass.containingFile;
-        var packageName: String = "";
-        if (selectedClassFile is PsiJavaFile) {
-            packageName = selectedClassFile.packageName!!
-        }
-        return packageName
-    }
-
     private fun getTestSourcesRoot(currentProject: Project, selectedClass: PsiClass): VirtualFile? {
-        val module =
-            ProjectRootManager.getInstance(currentProject).fileIndex.getModuleForFile(selectedClass.containingFile.virtualFile)
-        if (module == null) {
-            return null
-        }
-        val testSourceRoots =
-            ModuleRootManager.getInstance(module).getSourceRoots(JavaSourceRootType.TEST_SOURCE)
+        val testSourceRoots = TestMotherHelper.getPossibleTestSourceRoots(selectedClass)
         if (testSourceRoots.size != 1) {
             // TODO show message to select a source root if there are multiple
             Messages.showMessageDialog(
