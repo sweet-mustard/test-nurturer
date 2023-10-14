@@ -44,7 +44,7 @@
       text="Generate Test Mother" description="Generate Test Mother for the current class">
       <add-to-group group-id="RunContextGroup" anchor="last"/>
       <add-to-group group-id="ToolsMenu" anchor="first"/>
-      <keyboard-shortcut keymap="$default" first-keystroke="shift meta M"/>
+      <keyboard-shortcut keymap="$default" first-keystroke="shift control M"/>
     </action>
   </actions>
 
