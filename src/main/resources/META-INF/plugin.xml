@@ -27,6 +27,8 @@
       text="Generate Test Mother" description="Generate Test Mother for the current class">
       <add-to-group group-id="RunContextGroup" anchor="last"/>
       <add-to-group group-id="ToolsMenu" anchor="first"/>
+      <add-to-group group-id="GenerateGroup" anchor="after"
+        relative-to-action="JavaGenerateGroup2"/>
       <keyboard-shortcut keymap="$default" first-keystroke="shift control M"/>
     </action>
   </actions>

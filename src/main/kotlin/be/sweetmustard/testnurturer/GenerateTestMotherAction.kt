@@ -1,6 +1,7 @@
 package be.sweetmustard.testnurturer
 
 import com.intellij.ide.highlighter.JavaFileType
+import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
@@ -42,6 +43,26 @@ class GenerateTestMotherAction : AnAction() {
         WriteCommandAction.runWriteCommandAction(currentProject) {
             generateTestMother(currentProject, selectedClass)
         }
+    }
+
+    override fun update(event: AnActionEvent) {
+        val selectedElement: PsiElement? = event.getData(CommonDataKeys.PSI_ELEMENT)
+
+        if (selectedElement == null) {
+            event.presentation.isEnabled = false;
+        } else {
+            // The action should not be visible if the current class is already a test mother
+            if (selectedElement.containingFile.name.endsWith("Mother.java")) {
+                event.presentation.isVisible = false;
+            } else {
+                event.presentation.isVisible = true;
+                event.presentation.isEnabled = true;
+            }
+        }
+    }
+
+    override fun getActionUpdateThread(): ActionUpdateThread {
+        return ActionUpdateThread.BGT
     }
 
     private fun generateTestMother(currentProject: Project, selectedClass: PsiClass) {
