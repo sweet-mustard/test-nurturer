@@ -10,7 +10,6 @@ import com.intellij.openapi.ui.Messages
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.*
 import com.intellij.psi.codeStyle.CodeStyleManager
-import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.PsiTreeUtil.findChildOfType
 import com.intellij.psi.util.PsiTreeUtil.findChildrenOfType
 import com.intellij.psi.util.PsiTypesUtil
@@ -167,8 +166,7 @@ class GenerateTestMotherAction : AnAction() {
         elementFactory: PsiElementFactory,
         builderInnerClass: PsiClass
     ) {
-        val fieldsOfSelectedClass =
-            PsiTreeUtil.findChildrenOfAnyType(selectedClass, PsiField::class.java)
+        val fieldsOfSelectedClass = selectedClass.allFields;
         for (psiField in fieldsOfSelectedClass) {
 
             val fieldName = psiField.name

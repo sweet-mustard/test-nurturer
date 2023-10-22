@@ -21,10 +21,16 @@ class MotherInspector : AbstractBaseJavaLocalInspectionTool() {
                 }
 
                 val productionClass = currentClass;
-                val productionClassFields = productionClass.allFields.map {
-                    Field(it.name, it.type, it)
-                }.toSet()
-
+                val productionClassFields: Set<Field> =
+                    if (productionClass.recordComponents.size > 0) {
+                        productionClass.recordComponents.map {
+                            Field(it.name, it.type, it)
+                        }.toSet()
+                    } else {
+                        productionClass.allFields.map {
+                            Field(it.name, it.type, it)
+                        }.toSet()
+                    }
                 val innerBuilderClass = motherClass.findInnerClassByName("Builder", false)
                 if (innerBuilderClass == null) {
                     // There is no inner `Builder` class, we can't check the fields
@@ -69,7 +75,7 @@ class MotherInspector : AbstractBaseJavaLocalInspectionTool() {
     data class Field(
         var name: String,
         var type: PsiType,
-        var field: PsiField
+        var field: PsiElement
     ) {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
