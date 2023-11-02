@@ -19,8 +19,14 @@
 - [ ] Click the <kbd>Watch</kbd> button on the top of the [IntelliJ Platform Plugin Template][template] to be notified about releases containing new features and fixes.
 
 <!-- Plugin description -->
-The Test Nurturer IntelliJ plugin allows to generate Test Mother classes.
+The Test Nurturer IntelliJ-based plugin allows generating Test Mother classes.
 This plugin was inspired by the [Mastering the Object Mother](https://jonasg.io/posts/object-mother/) blog post of [Jonas Geiregat](https://jonasg.io/).
+
+After installing the plugin, you can generate a Test Mother via the Tools > Generate Test Mother
+menu item.
+
+The plugin also contains an inspection that will warn if the Test Mother is missing fields that are
+present in the object that you create a Test Mother for.
 
 The development of this plugin is proudly sponsored by [Sweet Mustard](https://www.sweetmustard.be/).
 <!-- Plugin description end -->
