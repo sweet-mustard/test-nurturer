@@ -1,5 +1,6 @@
 package be.sweetmustard.testnurturer
 
+import com.intellij.icons.AllIcons
 import com.intellij.ide.highlighter.JavaFileType
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
@@ -8,6 +9,7 @@ import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
+import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.*
 import com.intellij.psi.codeStyle.CodeStyleManager
@@ -16,6 +18,10 @@ import com.intellij.psi.util.PsiTreeUtil.findChildrenOfType
 import com.intellij.psi.util.PsiTypesUtil
 import com.intellij.psi.util.PsiUtil.setModifierProperty
 import com.intellij.psi.util.parentOfType
+import com.intellij.ui.ColoredListCellRenderer
+import java.util.function.Consumer
+import javax.swing.JList
+import javax.swing.ListSelectionModel
 
 
 class GenerateTestMotherAction : AnAction() {
@@ -41,7 +47,7 @@ class GenerateTestMotherAction : AnAction() {
         }
 
         WriteCommandAction.runWriteCommandAction(currentProject) {
-            generateTestMother(currentProject, selectedClass)
+            generateTestMother(currentProject, selectedClass, event)
         }
     }
 
@@ -65,12 +71,27 @@ class GenerateTestMotherAction : AnAction() {
         return ActionUpdateThread.BGT
     }
 
-    private fun generateTestMother(currentProject: Project, selectedClass: PsiClass) {
-        val testSourcesRoot = getTestSourcesRoot(currentProject, selectedClass)
-        if (testSourcesRoot == null) {
-            return
+    private fun generateTestMother(
+        currentProject: Project,
+        selectedClass: PsiClass,
+        event: AnActionEvent
+    ) {
+        getTestSourcesRoot(selectedClass, event) { testSourcesRoot ->
+            WriteCommandAction.runWriteCommandAction(
+                currentProject,
+                "Generate Test Mother",
+                "",
+                {
+                    generateTestMother(selectedClass, testSourcesRoot, currentProject)
+                })
         }
+    }
 
+    private fun generateTestMother(
+        selectedClass: PsiClass,
+        testSourcesRoot: VirtualFile,
+        currentProject: Project
+    ) {
         val (motherFile: PsiFile, shouldCreateNewFile) = getOrCreateMotherFile(
             selectedClass,
             testSourcesRoot,
@@ -97,12 +118,15 @@ class GenerateTestMotherAction : AnAction() {
             val testSourceRootDirectory =
                 PsiManager.getInstance(currentProject).findDirectory(testSourcesRoot)!!
 
-            val directory = createPackageDirectoriesIfNeeded(testSourceRootDirectory, selectedClass)
+            val directory =
+                createPackageDirectoriesIfNeeded(testSourceRootDirectory, selectedClass)
 
-            directory.add(motherFile);
+            val addedMotherFile: PsiFile = directory.add(motherFile) as PsiFile;
+            addedMotherFile.navigate(true)
+        } else {
+            motherFile.navigate(true)
         }
 
-        motherFile.navigate(true)
     }
 
     private fun createPackageDirectoriesIfNeeded(
@@ -149,19 +173,45 @@ class GenerateTestMotherAction : AnAction() {
         return Pair(motherFile, shouldCreateNewFile)
     }
 
-    private fun getTestSourcesRoot(currentProject: Project, selectedClass: PsiClass): VirtualFile? {
+    private fun getTestSourcesRoot(
+        selectedClass: PsiClass,
+        event: AnActionEvent,
+        callback: Consumer<VirtualFile>
+    ) {
         val testSourceRoots = TestMotherHelper.getPossibleTestSourceRoots(selectedClass)
         if (testSourceRoots.size != 1) {
-            // TODO show message to select a source root if there are multiple
-            Messages.showMessageDialog(
-                currentProject,
-                "There is not a single test source root. Got: " + testSourceRoots.map { it.name },
-                "Test Nurturer",
-                Messages.getErrorIcon()
-            )
-            return null
+            allowUserToSelectTestSourceRoot(testSourceRoots, selectedClass, callback, event)
+        } else {
+            callback.accept(testSourceRoots.get(0))
         }
-        return testSourceRoots.get(0)
+    }
+
+    private fun allowUserToSelectTestSourceRoot(
+        testSourceRoots: List<VirtualFile>,
+        selectedClass: PsiClass,
+        callback: Consumer<VirtualFile>,
+        event: AnActionEvent
+    ) {
+        JBPopupFactory.getInstance().createPopupChooserBuilder(testSourceRoots)
+            .setSelectionMode(ListSelectionModel.SINGLE_SELECTION)
+            .setTitle("Choose test sources root to generate Test Mother in for " + selectedClass.name)
+            .setRenderer(object : ColoredListCellRenderer<VirtualFile>() {
+                override fun customizeCellRenderer(
+                    list: JList<out VirtualFile>,
+                    value: VirtualFile,
+                    index: Int,
+                    selected: Boolean,
+                    hasFocus: Boolean
+                ) {
+                    icon = AllIcons.Modules.TestRoot;
+                    append(value.presentableName)
+                }
+            })
+            .setItemChosenCallback {
+                callback.accept(it)
+            }
+            .createPopup()
+            .showInBestPositionFor(event.dataContext)
     }
 
     private fun formatTestMother(
