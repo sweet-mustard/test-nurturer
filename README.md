@@ -31,6 +31,18 @@ present in the object that you create a Test Mother for.
 The development of this plugin is proudly sponsored by [Sweet Mustard](https://www.sweetmustard.be/).
 <!-- Plugin description end -->
 
+## Adding a new feature
+
+1. Create an issue in the [issue tracker](https://github.com/sweet-mustard/test-nurturer/issues), or
+   pick up one of the open issues. Assign yourself so it is clear somebody is working on it.
+2. Create a branch called `feature/gh-xxx` where `xxx` is the issue number on GitHub.
+3. Commit on the branch and push the branch.
+4. When done, update `CHANGLELOG.md` with information on the change you have done. Also make sure
+   you are up-to-date with the latest changes on `main`.
+5. Open a [pull request](https://github.com/sweet-mustard/test-nurturer/pulls) so the change can be
+   reviewed.
+6. If the PR is approved, it will be merged to `main` and included in the next release.
+
 ## Releasing a new version
 
 1. Ensure all PR's are merged into the `main` branch.
