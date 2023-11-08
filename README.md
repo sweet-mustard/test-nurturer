@@ -31,6 +31,16 @@ present in the object that you create a Test Mother for.
 The development of this plugin is proudly sponsored by [Sweet Mustard](https://www.sweetmustard.be/).
 <!-- Plugin description end -->
 
+## Releasing a new version
+
+1. Ensure all PR's are merged into the `main` branch.
+2. Update `pluginVersion` in the `gradle.properties` file to have the correct version you want to
+   release.
+3. Open the [GitHub releases](https://github.com/sweet-mustard/test-nurturer/releases) page. There
+   should be a draft release there.
+4. Edit the draft release and press "Publish release". This will start
+   the [release workflow](https://github.com/sweet-mustard/test-nurturer/actions/workflows/release.yml).
+
 ## Installation
 
 - Using the IDE built-in plugin system:
