@@ -52,6 +52,11 @@ The development of this plugin is proudly sponsored by [Sweet Mustard](https://w
    should be a draft release there.
 4. Edit the draft release and press "Publish release". This will start
    the [release workflow](https://github.com/sweet-mustard/test-nurturer/actions/workflows/release.yml).
+5. When the release action is done,
+   a [pull request](https://github.com/sweet-mustard/test-nurturer/pulls) will be created with the
+   changes to the `CHANGELOG.md` that will have the proper version filled in.
+6. Wait for the version to be approved by JetBrains.
+   See https://plugins.jetbrains.com/plugin/23056-test-nurturer for the plugin page.
 
 ## Installation
 
