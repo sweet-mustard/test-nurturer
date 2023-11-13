@@ -162,7 +162,7 @@ class GenerateTestMotherAction : AnAction() {
                 builder.appendLine("package ${packageName};")
                 builder.appendLine("")
             }
-            builder.appendLine("public class ${selectedClass.name}Mother {}")
+            builder.appendLine("public final class ${selectedClass.name}Mother {}")
             motherFile = PsiFileFactory.getInstance(currentProject)
                 .createFileFromText(
                     TestMotherHelper.getMotherFileName(selectedClass),
