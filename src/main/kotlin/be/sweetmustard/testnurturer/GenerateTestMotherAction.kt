@@ -1,5 +1,6 @@
 package be.sweetmustard.testnurturer
 
+import be.sweetmustard.testnurturer.GenerateTestMotherAction.SelectionItemType.*
 import com.intellij.icons.AllIcons
 import com.intellij.ide.highlighter.JavaFileType
 import com.intellij.openapi.actionSystem.ActionUpdateThread
@@ -20,6 +21,7 @@ import com.intellij.psi.util.PsiUtil.setModifierProperty
 import com.intellij.psi.util.parentOfType
 import com.intellij.ui.ColoredListCellRenderer
 import java.util.function.Consumer
+import javax.swing.Icon
 import javax.swing.JList
 import javax.swing.ListSelectionModel
 
@@ -46,9 +48,7 @@ class GenerateTestMotherAction : AnAction() {
             selectedElement.parentOfType<PsiClass>()!!
         }
 
-        WriteCommandAction.runWriteCommandAction(currentProject) {
-            generateTestMother(currentProject, selectedClass, event)
-        }
+        showCreateUpdateOrJumpDialog(currentProject, selectedClass, event)
     }
 
     override fun update(event: AnActionEvent) {
@@ -71,15 +71,76 @@ class GenerateTestMotherAction : AnAction() {
         return ActionUpdateThread.BGT
     }
 
-    private fun generateTestMother(
+    private fun showCreateUpdateOrJumpDialog(
         currentProject: Project,
         selectedClass: PsiClass,
         event: AnActionEvent
     ) {
-        getTestSourcesRoot(selectedClass, event) { testSourcesRoot ->
+        val motherClass = TestMotherHelper.getMotherForClass(selectedClass)
+        val items = if (motherClass != null) {
+            listOf(
+                SelectionItem(JUMP, "Jump to " + motherClass.name, motherClass),
+                SelectionItem(UPDATE, "Update " + motherClass.name, null)
+            )
+        } else {
+            listOf(SelectionItem(CREATE, "Create new Test Mother...", null))
+        }
+        JBPopupFactory.getInstance().createPopupChooserBuilder(items)
+            .setSelectionMode(ListSelectionModel.SINGLE_SELECTION)
+            .setTitle("Choose Test Mother for " + selectedClass.name)
+            .setRenderer(object : ColoredListCellRenderer<SelectionItem>() {
+                override fun customizeCellRenderer(
+                    list: JList<out SelectionItem>,
+                    value: SelectionItem,
+                    index: Int,
+                    selected: Boolean,
+                    hasFocus: Boolean
+                ) {
+                    icon = value.getIcon()
+                    append(value.title)
+                }
+            })
+            .setItemChosenCallback {
+                if (it.type == JUMP) {
+                    it.clazz!!.navigate(true)
+                } else {
+                    WriteCommandAction.runWriteCommandAction(
+                        currentProject,
+                        it.title,
+                        "",
+                        {
+                            generateTestMother(it.type, currentProject, selectedClass, event)
+                        })
+                }
+            }
+            .createPopup()
+            .showInBestPositionFor(event.dataContext)
+    }
+
+    private fun generateTestMother(
+        type: SelectionItemType,
+        currentProject: Project,
+        selectedClass: PsiClass,
+        event: AnActionEvent
+    ) {
+        if (type == CREATE) {
+            getTestSourcesRoot(selectedClass, event) { testSourcesRoot ->
+                WriteCommandAction.runWriteCommandAction(
+                    currentProject,
+                    "Generate Test Mother",
+                    "",
+                    {
+                        generateTestMother(selectedClass, testSourcesRoot, currentProject)
+                    })
+            }
+        } else if (type == UPDATE) {
+            // If we update, we don't show the dialog to select a test sources root as we
+            // know where the current test mother is.
+            val testSourcesRoot: VirtualFile =
+                TestMotherHelper.getTestSourceRootOfMother(selectedClass)!!
             WriteCommandAction.runWriteCommandAction(
                 currentProject,
-                "Generate Test Mother",
+                "Update Test Mother",
                 "",
                 {
                     generateTestMother(selectedClass, testSourcesRoot, currentProject)
@@ -326,5 +387,22 @@ class GenerateTestMotherAction : AnAction() {
         setModifierProperty(builderInnerClass, PsiModifier.STATIC, true);
         setModifierProperty(builderInnerClass, PsiModifier.FINAL, true)
         return builderInnerClass
+    }
+
+    data class SelectionItem(val type: SelectionItemType, val title: String, val clazz: PsiClass?) {
+
+        fun getIcon(): Icon {
+            return if (clazz == null) {
+                AllIcons.Actions.IntentionBulb
+            } else {
+                AllIcons.Nodes.Class
+            }
+        }
+    }
+
+    enum class SelectionItemType {
+        CREATE,
+        UPDATE,
+        JUMP
     }
 }
