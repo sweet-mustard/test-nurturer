@@ -4,6 +4,11 @@
 
 ## [Unreleased]
 
+### Added
+
+- Show a popup to select a test source root to generate the test mother in if there are multiple
+  test source roots.
+
 ## [0.0.2] - 2023-11-09
 
 ### Changed
