@@ -33,7 +33,7 @@ The development of this plugin is proudly sponsored by [Sweet Mustard](https://w
 
 1. Ensure all PR's are merged into the `main` branch.
 2. Update `pluginVersion` in the `gradle.properties` file to have the correct version you want to
-   release.
+   release (unless it is already correct).
 3. Open the [GitHub releases](https://github.com/sweet-mustard/test-nurturer/releases) page. There
    should be a draft release there.
 4. Edit the draft release and press "Publish release". This will start
@@ -43,6 +43,8 @@ The development of this plugin is proudly sponsored by [Sweet Mustard](https://w
    changes to the `CHANGELOG.md` that will have the proper version filled in.
 6. Wait for the version to be approved by JetBrains.
    See https://plugins.jetbrains.com/plugin/23056-test-nurturer for the plugin page.
+7. Update `pluginVersion` in the `gradle.properties` file to have the next version you want to
+   release.
 
 ## Installation
 
