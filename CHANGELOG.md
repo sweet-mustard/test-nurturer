@@ -9,6 +9,10 @@
 - Show a popup to select a test source root to generate the test mother in if there are multiple
   test source roots.
 
+### Changed
+
+- The generated Test Mother class is now `final`.
+
 ## [0.0.2] - 2023-11-09
 
 ### Changed
