@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [0.0.3] - 2023-11-13
+
 ### Added
 
 - Show popup when invoking the action to allow the user to either jump to the test mother, or update
@@ -27,6 +29,7 @@
 
 - Initial scaffold created from [IntelliJ Platform Plugin Template](https://github.com/JetBrains/intellij-platform-plugin-template)
 
-[Unreleased]: https://github.com/sweet-mustard/test-nurturer/compare/v0.0.2...HEAD
+[Unreleased]: https://github.com/sweet-mustard/test-nurturer/compare/v0.0.3...HEAD
+[0.0.3]: https://github.com/sweet-mustard/test-nurturer/compare/v0.0.2...v0.0.3
 [0.0.2]: https://github.com/sweet-mustard/test-nurturer/compare/v0.0.1...v0.0.2
 [0.0.1]: https://github.com/sweet-mustard/test-nurturer/commits/v0.0.1
