@@ -6,6 +6,8 @@
 
 ### Added
 
+- Show popup when invoking the action to allow the user to either jump to the test mother, or update
+  the test mother.
 - Show a popup to select a test source root to generate the test mother in if there are multiple
   test source roots.
 

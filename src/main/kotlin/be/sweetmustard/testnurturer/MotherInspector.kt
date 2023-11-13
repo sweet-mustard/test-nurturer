@@ -5,7 +5,6 @@ import com.intellij.codeInspection.AbstractBaseJavaLocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.*
-import com.intellij.psi.util.PsiTreeUtil
 
 class MotherInspector : AbstractBaseJavaLocalInspectionTool() {
 
@@ -14,7 +13,7 @@ class MotherInspector : AbstractBaseJavaLocalInspectionTool() {
 
             override fun visitClass(currentClass: PsiClass) {
                 super.visitClass(currentClass)
-                val motherClass = getMotherForClass(currentClass)
+                val motherClass = TestMotherHelper.getMotherForClass(currentClass)
                 if (motherClass == null) {
                     // There is no corresponding test mother for the current class
                     return
@@ -54,18 +53,6 @@ class MotherInspector : AbstractBaseJavaLocalInspectionTool() {
                 }
             }
         }
-    }
-
-    private fun getMotherForClass(currentClass: PsiClass): PsiClass? {
-        val testSourceRoots = TestMotherHelper.getPossibleTestSourceRoots(currentClass)
-        for (testSourceRoot in testSourceRoots) {
-            val correspondingMother =
-                TestMotherHelper.getCorrespondingMother(testSourceRoot, currentClass)
-            if (correspondingMother != null) {
-                return PsiTreeUtil.findChildOfType(correspondingMother, PsiClass::class.java)
-            }
-        }
-        return null;
     }
 
     /**
