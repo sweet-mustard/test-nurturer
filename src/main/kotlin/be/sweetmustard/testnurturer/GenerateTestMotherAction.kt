@@ -194,7 +194,7 @@ class GenerateTestMotherAction : AnAction() {
     ) {
         JBPopupFactory.getInstance().createPopupChooserBuilder(testSourceRoots)
             .setSelectionMode(ListSelectionModel.SINGLE_SELECTION)
-            .setTitle("Choose test sources root to generate Test Mother in for " + selectedClass.name)
+            .setTitle("Choose test sources root for " + selectedClass.name + " Test Mother generation")
             .setRenderer(object : ColoredListCellRenderer<VirtualFile>() {
                 override fun customizeCellRenderer(
                     list: JList<out VirtualFile>,
