@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+### Added
+
+- A Live Template called `bm` is added automatically to quickly generate a builder method manually.
+
 ### Fixed
 
 - The inspection will no longer report that there is no field in the corresponding test mother for

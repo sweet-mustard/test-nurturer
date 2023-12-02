@@ -19,6 +19,9 @@
       enabledByDefault="true"
       level="WARNING"
       implementationClass="be.sweetmustard.testnurturer.MotherInspector"/>
+    <defaultLiveTemplates file="/liveTemplates/builder-method.xml"/>
+    <liveTemplateContext contextId="JAVA_CODE"
+      implementation="com.intellij.codeInsight.template.JavaCodeContextType$Generic"/>
   </extensions>
 
   <actions>
