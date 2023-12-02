@@ -4,6 +4,11 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- The inspection will no longer report that there is no field in the corresponding test mother for
+  static fields.
+
 ## [0.0.3] - 2023-11-13
 
 ### Added

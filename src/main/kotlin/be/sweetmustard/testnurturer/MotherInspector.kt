@@ -19,16 +19,21 @@ class MotherInspector : AbstractBaseJavaLocalInspectionTool() {
                     return
                 }
 
-                val productionClass = currentClass;
+                val productionClass = currentClass
                 val productionClassFields: Set<Field> =
-                    if (productionClass.recordComponents.size > 0) {
+                    if (productionClass.recordComponents.isNotEmpty()) {
                         productionClass.recordComponents.map {
                             Field(it.name, it.type, it)
                         }.toSet()
                     } else {
-                        productionClass.allFields.map {
-                            Field(it.name, it.type, it)
-                        }.toSet()
+                        productionClass.allFields
+                            .filter {
+                                it.modifierList == null
+                                        || !it.modifierList!!.hasModifierProperty(PsiModifier.STATIC)
+                            }
+                            .map {
+                                Field(it.name, it.type, it)
+                            }.toSet()
                     }
                 val innerBuilderClass = motherClass.findInnerClassByName("Builder", false)
                 if (innerBuilderClass == null) {
