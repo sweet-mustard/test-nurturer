@@ -28,11 +28,11 @@ import javax.swing.ListSelectionModel
 
 class GenerateTestMotherAction : AnAction() {
     override fun actionPerformed(event: AnActionEvent) {
-        val currentProject: Project = event.getProject()!!
+        val currentProject: Project = event.project!!
         val selectedElement: PsiElement? = event.getData(CommonDataKeys.PSI_ELEMENT)
 
         if (selectedElement == null) {
-            val title: String = event.getPresentation().getDescription()
+            val title: String = event.presentation.description
             Messages.showMessageDialog(
                 currentProject,
                 "no class selected :(",
@@ -55,14 +55,17 @@ class GenerateTestMotherAction : AnAction() {
         val selectedElement: PsiElement? = event.getData(CommonDataKeys.PSI_ELEMENT)
 
         if (selectedElement == null) {
-            event.presentation.isEnabled = false;
+            event.presentation.isEnabled = false
         } else {
             // The action should not be visible if the current class is already a test mother
-            if (selectedElement.containingFile.name.endsWith("Mother.java")) {
-                event.presentation.isVisible = false;
+            if (selectedElement.containingFile != null && selectedElement.containingFile.name.endsWith(
+                    "Mother.java"
+                )
+            ) {
+                event.presentation.isVisible = false
             } else {
-                event.presentation.isVisible = true;
-                event.presentation.isEnabled = true;
+                event.presentation.isVisible = true
+                event.presentation.isEnabled = true
             }
         }
     }
@@ -182,7 +185,7 @@ class GenerateTestMotherAction : AnAction() {
             val directory =
                 createPackageDirectoriesIfNeeded(testSourceRootDirectory, selectedClass)
 
-            val addedMotherFile: PsiFile = directory.add(motherFile) as PsiFile;
+            val addedMotherFile: PsiFile = directory.add(motherFile) as PsiFile
             addedMotherFile.navigate(true)
         } else {
             motherFile.navigate(true)
@@ -219,7 +222,7 @@ class GenerateTestMotherAction : AnAction() {
         if (motherFile == null) {
             shouldCreateNewFile = true
             val builder = StringBuilder()
-            if (packageName.length > 0) {
+            if (packageName.isNotEmpty()) {
                 builder.appendLine("package ${packageName};")
                 builder.appendLine("")
             }
@@ -264,7 +267,7 @@ class GenerateTestMotherAction : AnAction() {
                     selected: Boolean,
                     hasFocus: Boolean
                 ) {
-                    icon = AllIcons.Modules.TestRoot;
+                    icon = AllIcons.Modules.TestRoot
                     append(value.presentableName)
                 }
             })
@@ -298,7 +301,7 @@ class GenerateTestMotherAction : AnAction() {
         elementFactory: PsiElementFactory,
         builderInnerClass: PsiClass
     ) {
-        val fieldsOfSelectedClass = selectedClass.allFields;
+        val fieldsOfSelectedClass = selectedClass.allFields
         for (psiField in fieldsOfSelectedClass) {
 
             val fieldName = psiField.name
@@ -372,7 +375,7 @@ class GenerateTestMotherAction : AnAction() {
             val builderMethod: PsiMethod = elementFactory.createMethod(
                 builderEntryPointMethodName,
                 PsiTypesUtil.getClassType(builderInnerClass)
-            );
+            )
             setModifierProperty(builderMethod, PsiModifier.STATIC, true)
             val body = builderMethod.body!!
             body.add(elementFactory.createStatementFromText("return new Builder();", builderMethod))
@@ -384,7 +387,7 @@ class GenerateTestMotherAction : AnAction() {
         elementFactory: PsiElementFactory
     ): PsiClass {
         val builderInnerClass: PsiClass = elementFactory.createClass("Builder")
-        setModifierProperty(builderInnerClass, PsiModifier.STATIC, true);
+        setModifierProperty(builderInnerClass, PsiModifier.STATIC, true)
         setModifierProperty(builderInnerClass, PsiModifier.FINAL, true)
         return builderInnerClass
     }
