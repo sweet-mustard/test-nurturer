@@ -5,6 +5,7 @@ import com.intellij.codeInspection.AbstractBaseJavaLocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.*
+import com.intellij.psi.util.childrenOfType
 
 class MotherInspector : AbstractBaseJavaLocalInspectionTool() {
 
@@ -32,7 +33,17 @@ class MotherInspector : AbstractBaseJavaLocalInspectionTool() {
                                         || !it.modifierList!!.hasModifierProperty(PsiModifier.STATIC)
                             }
                             .map {
-                                Field(it.name, it.type, it)
+                                val psiElement: PsiElement =
+                                    if (it.containingClass?.equals(productionClass) ?: false) {
+                                        it
+                                    } else {
+                                        // When there is a field missing that is from a parent class,
+                                        // we can't highlight the field itself since it is not present in the current class
+                                        // So we highlight the name of the class at the top.
+                                        // Using `productionClass` would highlight the complete file, which would be very annoying.
+                                        productionClass.childrenOfType<PsiIdentifier>().first()
+                                    };
+                                Field(it.name, it.type, psiElement)
                             }.toSet()
                     }
                 val innerBuilderClass = motherClass.findInnerClassByName("Builder", false)
@@ -50,8 +61,11 @@ class MotherInspector : AbstractBaseJavaLocalInspectionTool() {
                 if (!extraFieldsInProductionClass.isEmpty()) {
                     for (field in extraFieldsInProductionClass) {
                         holder.registerProblem(
-                            field.field,
-                            MyBundle.message("inspection.mother.missing.field.in.mother"),
+                            field.elementToHighlight,
+                            MyBundle.message(
+                                "inspection.mother.missing.field.in.mother",
+                                field.name
+                            ),
                             ProblemHighlightType.WARNING
                         )
                     }
@@ -67,7 +81,7 @@ class MotherInspector : AbstractBaseJavaLocalInspectionTool() {
     data class Field(
         var name: String,
         var type: PsiType,
-        var field: PsiElement
+        var elementToHighlight: PsiElement
     ) {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
