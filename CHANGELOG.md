@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- Make plugin compatible with IntelliJ IDEA 2024.1
+
 ## [0.1.0] - 2023-12-07
 
 ### Added
