@@ -15,42 +15,37 @@ class MotherInspector : AbstractBaseJavaLocalInspectionTool() {
             override fun visitClass(currentClass: PsiClass) {
                 super.visitClass(currentClass)
                 val motherClass = TestMotherHelper.getMotherForClass(currentClass)
-                if (motherClass == null) {
-                    // There is no corresponding test mother for the current class
+                    ?: // There is no corresponding test mother for the current class
                     return
-                }
 
-                val productionClass = currentClass
                 val productionClassFields: Set<Field> =
-                    if (productionClass.recordComponents.isNotEmpty()) {
-                        productionClass.recordComponents.map {
+                    if (currentClass.recordComponents.isNotEmpty()) {
+                        currentClass.recordComponents.map {
                             Field(it.name, it.type, it)
                         }.toSet()
                     } else {
-                        productionClass.allFields
+                        currentClass.allFields
                             .filter {
                                 it.modifierList == null
                                         || !it.modifierList!!.hasModifierProperty(PsiModifier.STATIC)
                             }
                             .map {
                                 val psiElement: PsiElement =
-                                    if (it.containingClass?.equals(productionClass) ?: false) {
+                                    if (it.containingClass?.equals(currentClass) == true) {
                                         it
                                     } else {
                                         // When there is a field missing that is from a parent class,
                                         // we can't highlight the field itself since it is not present in the current class
                                         // So we highlight the name of the class at the top.
                                         // Using `productionClass` would highlight the complete file, which would be very annoying.
-                                        productionClass.childrenOfType<PsiIdentifier>().first()
-                                    };
+                                        currentClass.childrenOfType<PsiIdentifier>().first()
+                                    }
                                 Field(it.name, it.type, psiElement)
                             }.toSet()
                     }
                 val innerBuilderClass = motherClass.findInnerClassByName("Builder", false)
-                if (innerBuilderClass == null) {
-                    // There is no inner `Builder` class, we can't check the fields
+                    ?: // There is no inner `Builder` class, we can't check the fields
                     return
-                }
 
                 val innerBuilderFields = innerBuilderClass.allFields.map {
                     Field(it.name, it.type, it)

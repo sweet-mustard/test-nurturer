@@ -165,9 +165,10 @@ class GenerateTestMotherAction : AnAction() {
         val motherClass = findChildOfType(motherFile, PsiClass::class.java)!!
 
         val elementFactory = JavaPsiFacade.getInstance(currentProject).elementFactory
-        val existingBuilder = findChildrenOfType(motherClass, PsiClass::class.java)
-            .filter { it.name == "Builder" }
-            .firstOrNull()
+        val existingBuilder = findChildrenOfType(
+            motherClass,
+            PsiClass::class.java
+        ).firstOrNull { it.name == "Builder" }
         if (existingBuilder != null) {
             populateClass(elementFactory, selectedClass, motherClass, existingBuilder)
         } else {
@@ -246,7 +247,7 @@ class GenerateTestMotherAction : AnAction() {
         if (testSourceRoots.size != 1) {
             allowUserToSelectTestSourceRoot(testSourceRoots, selectedClass, callback, event)
         } else {
-            callback.accept(testSourceRoots.get(0))
+            callback.accept(testSourceRoots[0])
         }
     }
 
@@ -306,9 +307,10 @@ class GenerateTestMotherAction : AnAction() {
 
             val fieldName = psiField.name
 
-            val existingField = findChildrenOfType(builderInnerClass, PsiField::class.java)
-                .filter { it.name == fieldName }
-                .firstOrNull()
+            val existingField = findChildrenOfType(
+                builderInnerClass,
+                PsiField::class.java
+            ).firstOrNull { it.name == fieldName }
 
             if (existingField == null) {
                 val builderInnerClassField =
@@ -339,13 +341,14 @@ class GenerateTestMotherAction : AnAction() {
             }
         }
 
-        val existingReturnMethod = findChildrenOfType(builderInnerClass, PsiMethod::class.java)
-            .filter { it.name == "build" }
-            .firstOrNull()
+        val existingReturnMethod = findChildrenOfType(
+            builderInnerClass,
+            PsiMethod::class.java
+        ).firstOrNull { it.name == "build" }
 
         existingReturnMethod?.delete()
 
-        val parameterList = fieldsOfSelectedClass.map { it.name }.joinToString(separator = ",")
+        val parameterList = fieldsOfSelectedClass.joinToString(separator = ",") { it.name }
 
         val returnMethod =
             elementFactory.createMethod("build", PsiTypesUtil.getClassType(selectedClass))
@@ -367,9 +370,10 @@ class GenerateTestMotherAction : AnAction() {
         val className = selectedClass.name!!
         val builderEntryPointMethodName = className.replaceFirstChar { it.lowercase() }
 
-        val existingMethod = findChildrenOfType(motherClass, PsiMethod::class.java)
-            .filter { it.name == builderEntryPointMethodName }
-            .firstOrNull()
+        val existingMethod = findChildrenOfType(
+            motherClass,
+            PsiMethod::class.java
+        ).firstOrNull { it.name == builderEntryPointMethodName }
 
         if (existingMethod == null) {
             val builderMethod: PsiMethod = elementFactory.createMethod(
