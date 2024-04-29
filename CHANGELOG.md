@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [1.0.0] - 2024-04-29
+
 ### Fixed
 
 - Make plugin compatible with IntelliJ IDEA 2024.1
@@ -47,7 +49,8 @@
 - Initial scaffold created
   from [IntelliJ Platform Plugin Template](https://github.com/JetBrains/intellij-platform-plugin-template)
 
-[Unreleased]: https://github.com/sweet-mustard/test-nurturer/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/sweet-mustard/test-nurturer/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/sweet-mustard/test-nurturer/compare/v0.1.0...v1.0.0
 [0.1.0]: https://github.com/sweet-mustard/test-nurturer/compare/v0.0.3...v0.1.0
 [0.0.3]: https://github.com/sweet-mustard/test-nurturer/compare/v0.0.2...v0.0.3
 [0.0.2]: https://github.com/sweet-mustard/test-nurturer/compare/v0.0.1...v0.0.2
