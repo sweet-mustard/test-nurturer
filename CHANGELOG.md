@@ -4,6 +4,12 @@
 
 ## [Unreleased]
 
+### Changed
+
+- Migrate
+  to [IntelliJ Platform Gradle Plugin 2.0](https://blog.jetbrains.com/platform/2024/07/intellij-platform-gradle-plugin-2-0/).
+- Make plugin compatible with IntelliJ IDEA 2024.2
+
 ## [1.0.0] - 2024-04-29
 
 ### Fixed
