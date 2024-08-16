@@ -46,6 +46,25 @@ The development of this plugin is proudly sponsored by [Sweet Mustard](https://w
 7. Update `pluginVersion` in the `gradle.properties` file to have the next version you want to
    release.
 
+### Cleanup a release
+
+If a release build for some reason fails, you need to do some or all of the following to clean up (
+Depending on where exactly the release process failed):
+
+1. Remove the assets from the release using the `gh` CLI tool:
+
+* `gh release delete-asset v2.0.0 test-nurturer-2.0.0.tar.gz`
+* `gh release delete-asset v2.0.0 test-nurturer-2.0.0.zip`
+
+2. Delete the release from
+   the  [GitHub releases](https://github.com/sweet-mustard/test-nurturer/releases) page.
+3. Delete the version from the
+   Jetbrains [plugin page](https://plugins.jetbrains.com/plugin/23056-test-nurturer)
+4. Remove the GIT branch for the changelog update (e.g. `changelog-update-v2.0.0`)
+
+After that, you need to change something on the main branch to generate the draft release again, so
+you can retry the release.
+
 ## Installation
 
 - Using the IDE built-in plugin system:
