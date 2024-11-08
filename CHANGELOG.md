@@ -6,7 +6,6 @@
 
 ## [2.1.0] - 2024-11-08
 
-- Changelog update - v2.0.0 by @wimdeblauwe in https://github.com/sweet-mustard/test-nurturer/pull/75
 - Bump org.jetbrains.kotlin.jvm from 2.0.10 to 2.0.20 by @dependabot in https://github.com/sweet-mustard/test-nurturer/pull/76
 - Bump JetBrains/qodana-action from 2024.1.9 to 2024.2.3 by @dependabot in https://github.com/sweet-mustard/test-nurturer/pull/80
 - Bump org.jetbrains.qodana from 2024.1.9 to 2024.2.3 by @dependabot in https://github.com/sweet-mustard/test-nurturer/pull/79
