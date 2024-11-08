@@ -4,6 +4,19 @@
 
 ## [Unreleased]
 
+## [2.1.0] - 2024-11-08
+
+- Changelog update - v2.0.0 by @wimdeblauwe in https://github.com/sweet-mustard/test-nurturer/pull/75
+- Bump org.jetbrains.kotlin.jvm from 2.0.10 to 2.0.20 by @dependabot in https://github.com/sweet-mustard/test-nurturer/pull/76
+- Bump JetBrains/qodana-action from 2024.1.9 to 2024.2.3 by @dependabot in https://github.com/sweet-mustard/test-nurturer/pull/80
+- Bump org.jetbrains.qodana from 2024.1.9 to 2024.2.3 by @dependabot in https://github.com/sweet-mustard/test-nurturer/pull/79
+- Bump org.jetbrains.intellij.platform from 2.0.1 to 2.1.0 by @dependabot in https://github.com/sweet-mustard/test-nurturer/pull/81
+- Bump org.jetbrains:annotations from 24.1.0 to 25.0.0 by @dependabot in https://github.com/sweet-mustard/test-nurturer/pull/82
+- Bump org.jetbrains.kotlin.jvm from 2.0.20 to 2.0.21 by @dependabot in https://github.com/sweet-mustard/test-nurturer/pull/84
+- Bump org.jetbrains:annotations from 25.0.0 to 26.0.1 by @dependabot in https://github.com/sweet-mustard/test-nurturer/pull/85
+- Bump JetBrains/qodana-action from 2024.2.3 to 2024.2.6 by @dependabot in https://github.com/sweet-mustard/test-nurturer/pull/88
+- Bump org.jetbrains.qodana from 2024.2.3 to 2024.2.6 by @dependabot in https://github.com/sweet-mustard/test-nurturer/pull/89
+
 ## [2.0.0] - 2024-08-16
 
 ### Changed
@@ -57,8 +70,8 @@
 - Initial scaffold created
   from [IntelliJ Platform Plugin Template](https://github.com/JetBrains/intellij-platform-plugin-template)
 
-[Unreleased]: https://github.com/sweet-mustard/test-nurturer/compare/v2.0.0...HEAD
-
+[Unreleased]: https://github.com/sweet-mustard/test-nurturer/compare/v2.1.0...HEAD
+[2.1.0]: https://github.com/sweet-mustard/test-nurturer/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/sweet-mustard/test-nurturer/compare/v1.0.0...v2.0.0
 [1.0.0]: https://github.com/sweet-mustard/test-nurturer/compare/v0.1.0...v1.0.0
 [0.1.0]: https://github.com/sweet-mustard/test-nurturer/compare/v0.0.3...v0.1.0
