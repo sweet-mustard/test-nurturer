@@ -1,5 +1,6 @@
 package be.sweetmustard.testnurturer
 
+import com.intellij.openapi.project.modules
 import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.vfs.VirtualFile
@@ -54,8 +55,18 @@ class TestMotherHelper {
             if (module == null) {
                 return Collections.emptyList()
             }
-            return ModuleRootManager.getInstance(module)
+
+            // First search for test sources in the own module
+            val result = ModuleRootManager.getInstance(module)
                 .getSourceRoots(JavaSourceRootType.TEST_SOURCE)
+            return if (result.isEmpty()) {
+                // If nothing is found, search in the other modules as well (Needed for Gradle Spring Boot projects)
+                productionClass.project.modules.flatMap { module ->
+                    ModuleRootManager.getInstance(module).getSourceRoots(JavaSourceRootType.TEST_SOURCE)
+                }
+            } else {
+                result
+            }
         }
 
         fun getMotherForClass(currentClass: PsiClass): PsiClass? {
