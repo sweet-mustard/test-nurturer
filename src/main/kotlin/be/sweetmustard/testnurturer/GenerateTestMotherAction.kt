@@ -11,6 +11,7 @@ import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
 import com.intellij.openapi.ui.popup.JBPopupFactory
+import com.intellij.openapi.util.text.StringUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.*
 import com.intellij.psi.codeStyle.CodeStyleManager
@@ -32,21 +33,17 @@ class GenerateTestMotherAction : AnAction() {
         val selectedElement: PsiElement? = event.getData(CommonDataKeys.PSI_ELEMENT)
 
         if (selectedElement == null) {
-            val title: String = event.presentation.description
+            val title: String = StringUtil.capitalizeWords(event.presentation.description, true)
             Messages.showMessageDialog(
                 currentProject,
-                "no class selected :(",
+                "No class selected :(",
                 title,
                 Messages.getErrorIcon()
             )
             return
         }
 
-        val selectedClass: PsiClass = if (selectedElement is PsiClass) {
-            selectedElement
-        } else {
-            selectedElement.parentOfType<PsiClass>()!!
-        }
+        val selectedClass: PsiClass = selectedElement as? PsiClass ?: selectedElement.parentOfType<PsiClass>()!!
 
         showCreateUpdateOrJumpDialog(currentProject, selectedClass, event)
     }

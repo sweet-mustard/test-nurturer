@@ -59,13 +59,13 @@ class TestMotherHelper {
             // First search for test sources in the own module
             val result = ModuleRootManager.getInstance(module)
                 .getSourceRoots(JavaSourceRootType.TEST_SOURCE)
-            if (result.isEmpty()) {
+            return if (result.isEmpty()) {
                 // If nothing is found, search in the other modules as well (Needed for Gradle Spring Boot projects)
-                return productionClass.project.modules.flatMap { module ->
+                productionClass.project.modules.flatMap { module ->
                     ModuleRootManager.getInstance(module).getSourceRoots(JavaSourceRootType.TEST_SOURCE)
                 }
             } else {
-                return result
+                result
             }
         }
 
