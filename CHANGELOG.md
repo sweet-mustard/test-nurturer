@@ -4,6 +4,21 @@
 
 ## [Unreleased]
 
+## [2.2.0] - 2025-07-28
+
+- Changelog update - `v2.1.0` by @github-actions[bot] in https://github.com/sweet-mustard/test-nurturer/pull/90
+- fix: Search for test sources in other modules in the project if none … by @wimdeblauwe-swmu in https://github.com/sweet-mustard/test-nurturer/pull/106
+- Bump org.jetbrains.kotlin.jvm from 2.0.21 to 2.1.10 by @dependabot[bot] in https://github.com/sweet-mustard/test-nurturer/pull/104
+- Bump org.jetbrains:annotations from 26.0.1 to 26.0.2 by @dependabot[bot] in https://github.com/sweet-mustard/test-nurturer/pull/103
+- build: remove deprecated parameter by @wimdeblauwe-swmu in https://github.com/sweet-mustard/test-nurturer/pull/107
+- Bump codecov/codecov-action from 4 to 5 by @dependabot[bot] in https://github.com/sweet-mustard/test-nurturer/pull/91
+- Bump org.jetbrains.kotlinx.kover from 0.8.3 to 0.9.1 by @dependabot[bot] in https://github.com/sweet-mustard/test-nurturer/pull/102
+- Bump JetBrains/qodana-action from 2024.2.6 to 2024.3.4 by @dependabot[bot] in https://github.com/sweet-mustard/test-nurturer/pull/101
+- Bump org.jetbrains.intellij.platform from 2.1.0 to 2.2.1 by @dependabot[bot] in https://github.com/sweet-mustard/test-nurturer/pull/97
+- Bump org.jetbrains.qodana from 2024.2.6 to 2024.3.4 by @dependabot[bot] in https://github.com/sweet-mustard/test-nurturer/pull/100
+- Update with IntelliJ Platform Plugin Template 2.2.0 by @wimdeblauwe-swmu in https://github.com/sweet-mustard/test-nurturer/pull/108
+- @wimdeblauwe-swmu made their first contribution in https://github.com/sweet-mustard/test-nurturer/pull/106
+
 ## [2.1.0] - 2024-11-08
 
 - Bump org.jetbrains.kotlin.jvm from 2.0.10 to 2.0.20 by @dependabot in https://github.com/sweet-mustard/test-nurturer/pull/76
@@ -69,7 +84,8 @@
 - Initial scaffold created
   from [IntelliJ Platform Plugin Template](https://github.com/JetBrains/intellij-platform-plugin-template)
 
-[Unreleased]: https://github.com/sweet-mustard/test-nurturer/compare/v2.1.0...HEAD
+[Unreleased]: https://github.com/sweet-mustard/test-nurturer/compare/v2.2.0...HEAD
+[2.2.0]: https://github.com/sweet-mustard/test-nurturer/compare/v2.1.0...v2.2.0
 [2.1.0]: https://github.com/sweet-mustard/test-nurturer/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/sweet-mustard/test-nurturer/compare/v1.0.0...v2.0.0
 [1.0.0]: https://github.com/sweet-mustard/test-nurturer/compare/v0.1.0...v1.0.0
