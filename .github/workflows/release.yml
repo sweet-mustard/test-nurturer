@@ -47,9 +47,11 @@ jobs:
       - name: Export Properties
         id: properties
         shell: bash
+        env:
+          RELEASE_BODY: ${{ github.event.release.body }}
         run: |
           CHANGELOG="$(cat << 'EOM' | sed -e 's/^[[:space:]]*$//g' -e '/./,$!d'
-          ${{ github.event.release.body }}
+          $RELEASE_BODY
           EOM
           )"
           
